@@ -1,0 +1,146 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Movie {
+    private String title;
+    private boolean available;
+
+    public Movie(String title) {
+        this.title = title;
+        this.available = true;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void rent() {
+        if (available) {
+            available = false;
+            System.out.println("Movie rented successfully: " + title);
+        } else {
+            System.out.println("Error: Movie is already rented out.");
+        }
+    }
+
+    public void returnMovie() {
+        if (!available) {
+            available = true;
+            System.out.println("Movie returned successfully: " + title);
+        } else {
+            System.out.println("Error: Movie was not rented.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Title: " + title + " | Available: " + (available ? "Yes" : "No");
+    }
+}
+
+class MovieStore {
+    private ArrayList<Movie> collection;
+
+    public MovieStore() {
+        collection = new ArrayList<>();
+    }
+
+    public void addMovie(String title) {
+        for (Movie movie : collection) {
+            if (movie.getTitle().equalsIgnoreCase(title)) {
+                System.out.println("Error: Movie already exists in the collection.");
+                return;
+            }
+        }
+        collection.add(new Movie(title));
+        System.out.println("Movie added successfully: " + title);
+    }
+
+    public void listMovies() {
+        if (collection.isEmpty()) {
+            System.out.println("No movies in the collection.");
+        } else {
+            System.out.println("Movie Collection:");
+            for (int i = 0; i < collection.size(); i++) {
+                System.out.println((i + 1) + ". " + collection.get(i));
+            }
+        }
+    }
+
+    public void rentMovie(String title) {
+        for (Movie movie : collection) {
+            if (movie.getTitle().equalsIgnoreCase(title)) {
+                movie.rent();
+                return;
+            }
+        }
+        System.out.println("Error: Movie not found in the collection.");
+    }
+
+    public void returnMovie(String title) {
+        for (Movie movie : collection) {
+            if (movie.getTitle().equalsIgnoreCase(title)) {
+                movie.returnMovie();
+                return;
+            }
+        }
+        System.out.println("Error: Movie not found in the collection.");
+    }
+}
+
+public class MovieRentalSystem {
+    public static void main(String[] args) {
+        MovieStore store = new MovieStore();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n--- Movie Rental System ---");
+            System.out.println("1. Add Movie");
+            System.out.println("2. List Movies");
+            System.out.println("3. Rent Movie");
+            System.out.println("4. Return Movie");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid choice. Please enter a number.");
+                scanner.next();
+                continue;
+            }
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter movie title to add: ");
+                    String titleToAdd = scanner.nextLine().trim();
+                    store.addMovie(titleToAdd);
+                    break;
+                case 2:
+                    store.listMovies();
+                    break;
+                case 3:
+                    System.out.print("Enter movie title to rent: ");
+                    String titleToRent = scanner.nextLine().trim();
+                    store.rentMovie(titleToRent);
+                    break;
+                case 4:
+                    System.out.print("Enter movie title to return: ");
+                    String titleToReturn = scanner.nextLine().trim();
+                    store.returnMovie(titleToReturn);
+                    break;
+                case 5:
+                    System.out.println("Exiting the system. Goodbye!");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
